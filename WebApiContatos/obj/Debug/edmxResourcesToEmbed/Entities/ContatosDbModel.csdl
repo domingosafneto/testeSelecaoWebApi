@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ProlinsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="C__MigrationHistory">
+    <Key>
+      <PropertyRef Name="MigrationId" />
+      <PropertyRef Name="ContextKey" />
+    </Key>
+    <Property Name="MigrationId" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="ContextKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Model" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+    <Property Name="ProductVersion" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Contato">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="IdPessoa" Type="Int32" Nullable="false" />
+    <Property Name="Valor" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Tipo" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Pessoa" Relationship="Self.FK_dbo_Contato_dbo_Pessoa_IdPessoa" FromRole="Contato" ToRole="Pessoa" />
+  </EntityType>
+  <EntityType Name="Endereco">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="IdPessoa" Type="Int32" Nullable="false" />
+    <Property Name="Logradouro" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Numero" Type="Int32" Nullable="false" />
+    <Property Name="Complemento" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Bairro" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Cidade" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Estado" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Tipo" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Pessoa" Relationship="Self.FK_dbo_Endereco_dbo_Pessoa_IdPessoa" FromRole="Endereco" ToRole="Pessoa" />
+  </EntityType>
+  <EntityType Name="Pessoa">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Nome" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Marcador" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Contatoes" Relationship="Self.FK_dbo_Contato_dbo_Pessoa_IdPessoa" FromRole="Pessoa" ToRole="Contato" />
+    <NavigationProperty Name="Enderecoes" Relationship="Self.FK_dbo_Endereco_dbo_Pessoa_IdPessoa" FromRole="Pessoa" ToRole="Endereco" />
+  </EntityType>
+  <Association Name="FK_dbo_Contato_dbo_Pessoa_IdPessoa">
+    <End Role="Pessoa" Type="Self.Pessoa" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Contato" Type="Self.Contato" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Pessoa">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Contato">
+        <PropertyRef Name="IdPessoa" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Endereco_dbo_Pessoa_IdPessoa">
+    <End Role="Pessoa" Type="Self.Pessoa" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Endereco" Type="Self.Endereco" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Pessoa">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Endereco">
+        <PropertyRef Name="IdPessoa" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ProlinsEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="C__MigrationHistory" EntityType="Self.C__MigrationHistory" />
+    <EntitySet Name="Contatoes" EntityType="Self.Contato" />
+    <EntitySet Name="Enderecoes" EntityType="Self.Endereco" />
+    <EntitySet Name="Pessoas" EntityType="Self.Pessoa" />
+    <AssociationSet Name="FK_dbo_Contato_dbo_Pessoa_IdPessoa" Association="Self.FK_dbo_Contato_dbo_Pessoa_IdPessoa">
+      <End Role="Pessoa" EntitySet="Pessoas" />
+      <End Role="Contato" EntitySet="Contatoes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Endereco_dbo_Pessoa_IdPessoa" Association="Self.FK_dbo_Endereco_dbo_Pessoa_IdPessoa">
+      <End Role="Pessoa" EntitySet="Pessoas" />
+      <End Role="Endereco" EntitySet="Enderecoes" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
